@@ -1,39 +1,20 @@
-
 FROM miykael/nipype_level2
 
-
-RUN echo "--- START   ----------"
+RUN groupadd -g 48 boutiques && \
+    useradd -m -s /bin/bash -N -u 48 boutiques -g boutiques
 
 # 30 mars hackfest on monte une directory /rstp_data pour récupérer détarer le dataset et un autre pour mettre le code
+RUN mkdir /rstp_data && \
+    mkdir /rstp_code
 
-RUN mkdir /rstp_data
-RUN chmod o+w /rstp_data
+# on copie le ginfizz_wrapper.sh, puis on va recuperer le pipeline de preprocess en python, enfin on récupère les 2 files from ginnipi/toolbox
+COPY ./ginfizz_wrapper.sh ./ginfizz_config.py ./ginfizz_tools.py ./ginfizz_main.py ./ginfizz_preprocess.py ./ginfizz_bandpass.py ./ginfizz_aicha_ss_arima.py ./computations.py ./flow.py /rstp_code/
 
-RUN mkdir /rstp_code
+RUN chmod -R 777 /home/jovyan && \
+    chmod -R 777 /rstp_data && \
+    chmod -R 777 /rstp_code && \
+    chmod -R 777 /opt
 
-COPY ./ginfizz_wrapper.sh  /rstp_code/ginfizz_wrapper.sh
-RUN   chmod 777  /rstp_code/ginfizz_wrapper.sh
-
-# debug du import nipype_level2 - essai de 
-RUN useradd -ms /bin/bash newuser
-USER newuser
-WORKDIR /home/newuser
-
-
-# on va recuperer le pipeline de preprocess en python
-
-COPY ./ginfizz_config.py              /rstp_code/ginfizz_config.py
-COPY ./ginfizz_tools.py              /rstp_code/ginfizz_tools.py
-COPY ./ginfizz_main.py                /rstp_code/ginfizz_main.py
-COPY ./ginfizz_preprocess.py          /rstp_code/ginfizz_preprocess.py
-COPY ./ginfizz_bandpass.py            /rstp_code/ginfizz_bandpass.py
-COPY ./ginfizz_aicha_ss_arima.py      /rstp_code/ginfizz_aicha_ss_arima.py
-# 2 files from ginnipi/toolbox
-COPY ./computations.py                /rstp_code/computations.py
-COPY ./flow.py                         /rstp_code/flow.py
-
+ENV PATH=${PATH}:/opt/conda/envs/python2/lib/python2.7/site-packages
 
 ENTRYPOINT ["/bin/bash"]
-
-
-

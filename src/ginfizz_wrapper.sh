@@ -10,8 +10,6 @@
 MCRROOT=/opt/mcr/v91/
 SPMSAROOT=/opt/spm12/run_spm12.sh
 CODEROOT=/rstp_code
-DATAROOT=/gasw-execution-dir/rstp_data
-
 
 
 function die {
@@ -25,7 +23,7 @@ function info {
     echo "[ $D ] INFO: $*"
 }
 
-if [ $# != 2 ]
+if [ $# != 3 ]
 then
     die "usage: $0 <input_tgz>  <output_dir>"
 fi
@@ -34,7 +32,8 @@ info "Start running ginfizz wrapper"
 
 INPUTFILE=$1
 OUTPUTDIR=$2
-info "parameters are ${INPUTFILE} and ${OUTPUTDIR} "
+DATAROOT=$3
+info "parameters are ${INPUTFILE} and ${OUTPUTDIR} and ${DATAROOT}"
 # it is lacking the path of the tar command
 
 info "PATH is ${PATH}"
